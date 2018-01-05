@@ -4,19 +4,10 @@ const R = require('ramda')
 const fs = require('fs')
 const axios = require('axios')
 const cheerio = require('cheerio')
-
-const getPage = (url) => axios.get(url).then(({ data }) => ({ url, markup: data }))
-const getBase = pageUrl => pageUrl.slice(0, pageUrl.lastIndexOf('/'))
-const slasher = (base, url) => `${base}${url.startsWith('/') ? '' : '/'}${url}`
-const fixUrl = (url) => slasher(`https://erowid.org`, url)
+const { getPage, getBase, slasher, fixUrl, saveToDisk } = require('./utils')
 
 const matching = R.curry((kind, url) => url.includes(kind))
 const sortByNameCaseInsensitive = R.sortBy(R.compose(R.toLower, R.prop('name')));
-
-const saveToDisk = R.curry((filename, data) => {
-  fs.writeFileSync(filename, JSON.stringify(data, null, '  '))
-  return data;
-})
 
 const printDrug = drug => console.log(drug)
 
